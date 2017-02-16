@@ -8,7 +8,7 @@ Unity 广告SDK
 
 ## Download
 
-[SuntengMob-sdk-Unity-Release](https://github.com/shunfei/suntengMob-sdk-android/releases)
+[SuntengMob-sdk-Unity-Release](https://github.com/shunfei/suntengMob-sdk-unity/releases)
 
 **Sample App Download**
 
@@ -16,14 +16,14 @@ Unity 广告SDK
  
 ## Change Log
 
-02/16/2017 - [v1.0.0](https://github.com/shunfei/suntengMob-sdk-android/releases/tag/v2.0.6)
+02/16/2017 - [v1.0.0](https://github.com/shunfei/suntengMob-sdk-unity/releases/tag/v1.0.0)
 
 * Initial release.
 
 ## 效果展示
 
 **Sample App下载**
- [Sample Apk](https://raw.githubusercontent.com/shunfei/suntengMob-sdk-android/master/sample/MobSample.apk)  
+ [Sample Apk](https://github.com/shunfei/suntengMob-sdk-unity/blob/master/sample/UnityAdsSample.apk)  
 
 **Sample Package 下载**
 [Sample Package](https://github.com/shunfei/suntengMob-sdk-unity/blob/master/sample/suntengMob_sample.unitypackage)
