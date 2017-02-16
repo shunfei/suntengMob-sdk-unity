@@ -6,9 +6,9 @@
 
  如果您正在使用Unity游戏开发引擎，并且使用c#进行开发，就可以导入该插件，然后在Android或者iOS平台中实现横幅、视频及插屏广告的展示。 
 
-  [插件下载地址](https://github.com/search?utf8=%E2%9C%93&q=sunteng)  
+  [插件下载地址](https://github.com/shunfei/suntengMob-sdk-unity/blob/master/suntengads-unity-plugin/suntengMob_v1.0.0.unitypackage)  
 
-  [使用示例Demo](https://github.com/search?utf8=%E2%9C%93&q=sunteng)
+  [使用示例Demo](https://github.com/shunfei/suntengMob-sdk-unity/blob/master/sample/suntengMob_sample.unitypackage)
 
 
 
