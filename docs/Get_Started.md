@@ -1,14 +1,14 @@
 # SuntengMob for Unity 帮助文档
 
-  Version：1.0.0  
+  Version：2.0.0  
 
-  Time：2017-02  
+  Time：2017-04  
 
  如果您正在使用Unity游戏开发引擎，并且使用c#进行开发，就可以导入该插件，然后在Android或者iOS平台中实现横幅、视频及插屏广告的展示。 
 
-  [插件下载地址](https://github.com/shunfei/suntengMob-sdk-unity/blob/master/suntengads-unity-plugin/suntengMob_v1.0.0.unitypackage)  
+  [插件下载地址](https://github.com/shunfei/suntengMob-sdk-unity/blob/master/suntengads-unity-plugin/suntengMob_v2.0.0.unitypackage)  
 
-  [使用示例Demo](https://github.com/shunfei/suntengMob-sdk-unity/blob/master/sample/suntengMob_sample.unitypackage)
+  [使用示例Demo](https://github.com/shunfei/suntengMob-sdk-unity/blob/master/sample/suntengMob_sample.unitypackage)  
 
 
 
@@ -36,7 +36,7 @@
 
 1. 打开Unity 编辑器，选择**Assets > Import Package > Custom Package**，指向你所下载的`suntengMobPlugin.package ` 文件；  
 
-2. 确认插件中所有的文件都已被选中，然后点击**Import** 按钮导入插件。
+2. 确认插件中所有的文件都已被选中，然后点击 **Import** 按钮导入插件。
 
 # 三、编写c#脚本
 
@@ -51,29 +51,21 @@ void Awake()
 {
 	#if UNITY_EDITOR
 	    string appSecret = "UNUSED";
-	    string videoUnitId = "UNUSED";
 	#elif UNITY_ANDROID
 	    string appSecret ="INSERT_ANDROID_APPSECRET_HERE";
-	    string videoUnitId = "INSERT_ANDROID_VIDEO_UNIT_ID_HERE";
 	#elif UNITY_IPHONE
 	    string appSecret = "INSERT_iOS_APPSECRET_HERE";
-	    string videoUnitId = "INSERT_iOS_VIDOE_UNIT_ID_HERE";
 	#else
 	    string appSecret = "UNEXPECTED_PLATFORM";
-	    string videoUnitId = "UNEXPECTED_PLATFORM";
 	#endif
 	
-	MobileAdService adService = MobileAdService.getInstance();
+	MobileAdService adService = MobileAdService.GetInstance();
 	//init ad service
-	adService.initAdService(appSecret);
-	//init videAd service
-	adService.initVideoService(appSecret,videoUnitId);
-	adService.setDebug(true);
-	adService.setLocationEnable(true);
+	adService.InitAdService(appSecret);
+	//adService.SetDebug(true);
+	adService.SetLocationEnable(true);
 }
 ```
-
-> `videoUnitId` 以及`adService.initVideoService(appSecret,videoUnitId)` 作用是初始化视频广告，如果游戏中使用到视频广告的时候，才必须添加。
 
 ## **2. 展示横幅广告**
 
@@ -104,42 +96,60 @@ private void RequestBannerView()
 
  `AdPosition` 是一个用来指定横幅广告在屏幕中展示位置的枚举类；  
  `AdSize` 作用是指定横幅广告的大小，里面内置了4个值，用户也可以通过构造方法 `AdSize(int width,int height)` 传入自定义的值，需要注意的是，这个值不是像素，而是像素密度。  
- `LoadBannerView（）` 方法加载广告成功之后,会直接展示在指定的位置。
+ `LoadBannerView()` 方法加载广告成功之后,会直接展示在指定的位置。
 
 2.2 横幅广告事件回调
 ```c#
 private void RequestBannerView() 
 {
-	BannerView bannerView = new BannerView(adUnitId, AdSize.Banner320x50, AdPositon.Top);
-	
-	//call back when ad request has show successfully.
-    bannerView.OnAdLoaded += HandleBannerViewLoaded;
-	//call back when ad request failed to load.
-    bannerView.OnAdFailedToLoad += HandleBannerViewLoadFailed;
+    BannerView bannerView = new BannerView(adUnitId, AdSize.Banner320x50, AdPositon.Top);
+  
+    //call back when bannerAd has been show successfully.
+    bannerView.OnAdShowSuccess += HandleBannerViewShowSuccess;
+    //call back when bannerAd was show failed.
+    bannerView.OnAdShowFailed += HandleBannerViewShowFailed;  
+    //call back when bannerAd has been closed.  
+    bannerView.OnAdClosed += HandleBannerVewClose;  
+    //call back when bannerAd has been clciked.  
+    bannerView.OnAdClicked += HandleBannerViewClick;
 }
 ```
 
 ```c#
-public void HandleBannerViewLoaded(object sender, EventArgs args)
+public void HandleBannerViewShowSuccess(object sender, EventArgs args)
 {
     MonoBehaviour.print("HandleBannerViewLoaded event received");
 }
 ```
 
-&emsp;广告请求失败时候，回调方法的第二个参数AdFailedToLoadEventArgs会有错误信息的描述。
-
 ```c#
-public void HandleBannerViewLoadFailed(object sender, AdFailedToLoadEventArgs args)
+//广告请求失败时候，回调方法的第二个参数CustomEventArgs会有错误信息的描述。
+public void HandleBannerViewShowFailed(object sender, CustomEventArgs args)
 {
     MonoBehaviour.print("HandleBannerViewLoadFailed event received with message:" + args.Message);
 }
-```
-> 开发者只需要对自己关心的事件回调做注册，并不需要实现所有的回调。
+```  
+
+```c#
+public void HandleBannerVewClose(object sender, EventArgs args)
+{
+    MonoBehaviour.print("HandleBannerVewClose event fired");
+}
+```  
+
+```c#
+public void HandleBannerViewClick(object sender, EventArgs args)
+{
+    MonoBehaviour.print("HandleBannerViewClick event fired");
+}
+```  
+
+> 开发者只需要对自己关心的事件回调做注册，并不强制实现所有的回调。
 
 2.3 隐藏和显示横幅广告  
 &emsp;`BannerView` 提供了`HideBannerView()` 方法用来隐藏横幅广告，横幅广告被隐藏之后，如果需要再显示它，可以调用`ShowBannerView()` 方法。
 
-2.4 销毁横幅广告
+2.4 销毁横幅广告  
 &emsp;当一个横幅广告使用完之后，调用`BannerView` 的`DestroyBannerView()` 方法 ，这个方法会通知`BannerView`的实体已经不再被使用，它所占有的内存可以被回收了。
 
 ## **3. 展示插屏广告**
@@ -191,7 +201,7 @@ private void RequestInterstitial()
 
     //Register call back for ad event;
     this.interstitial.OnAdLoaded += HandleInterstitialLoaded;
-    this.interstitial.OnAdFailedToLoad += HandleInterstitialLoadFailed;
+    this.interstitial.OnAdFailedToLoad += HandleInterstitialShowFailed;
     this.interstitial.OnAdDisplayed += HandleInterstitialDisplayed;
     this.interstitial.OnAdClicked += HandleInterstitialClicked;
     this.interstitial.OnAdClosed += HandleInterstitialClosed;
@@ -203,30 +213,38 @@ public void HandleInterstitialLoaded(object sender, EventArgs args)
 {
     MonoBehaviour.print("HandleInterstitialLoaded event received");
 }
+```
 
-public void HandleInterstitialLoadFailed(object sender, AdFailedToLoadEventArgs args)
+```c#
+public void HandleInterstitialShowFailed(object sender, AdFailedToLoadEventArgs args)
 {
     MonoBehaviour.print("HandleInterstitialLoadFailed event received with message:" + args.Message);
 }
+```
 
+```c#
 public void HandleInterstitialDisplayed(object sender, EventArgs args)
 {
     MonoBehaviour.print("HandleInterstitialDisplayed event received");
 
 }
+```
 
+```c#
 public void HandleInterstitialClicked(object sender, EventArgs args)
 {
     MonoBehaviour.print("HandleInterstitialClicked event received");
 }
+```
 
+```c#
 public void HandleInterstitialClosed(object sender, EventArgs args)
 {
     MonoBehaviour.print("HandleInterstitialClosed event received");
 }
 ```  
 
-`HandleInterstitialLoadFailed()` 加载广告时候，触发该回调表示广告请求失败，展示广告时候触发该回调，表明广告物料已经过期，如果需要展示需要重新请求。  
+`HandleInterstitialDisplayed()` 加载广告时候，触发该回调表示广告请求失败，展示广告时候触发该回调，表明广告物料已经过期，如果需要展示需要重新请求。  
 
 > 同样，开发者并不需要实现所有的回调方法，只需要实现自己所关心的的回调就行了。
 
@@ -245,18 +263,29 @@ using MobileAds.Api;
 
 private void RequestVideoAd() 
 {
-    this.videoAd = new BaseVideoAd(true);
+    #if UNITY_EDITOR
+        string adUnitId = "0";
+    #elif UNITY_ANDROID
+        string adUnitId = "2-38-14";
+    #elif UNITY_IPHONE
+        string adUnitId = "2-36-40";
+    #else
+        string adUnitId = "-1";
+    #endif
+    
+    this.videoAd = new BaseVideoAd(adUnitId);
     this.videoAd.LoadVidoAd();
 }
 ```
-> `BaseVideoAd`的构造中需要传入一个bool型的参数，用来确定在非wifi环境下，是否下载视频资源，默认false，即非wifi条件下默认不强制加载视频资源，建议开发者传入true。  
 
 4.2 展示视频广告  
 
 ```c#
 private void ShowVideoAd() 
 {
-    this.videoAd.ShowVodeoAd();
+    if (this.videoAd != null) {
+        this.videoAd.ShowVodeoAd();
+    }
 }
 ```
 > 如果直接调用`ShowVideoAd（）` 方法或者在视频广告未加载完成的时候调用，并不能展示出视频广告。  
@@ -266,13 +295,14 @@ private void ShowVideoAd()
 ```c#
 private void RequestVideoAd() 
 {
-    this.videoAd = new BaseVideoAd(true);
+    this.videoAd = new BaseVideoAd(adUnitId);
    
     //Register for BaseVideoAd event;
     this.videoAd.OnVideoAdLoaded += HandleVideoAdLoaded;
     this.videoAd.OnVideoAdFailedToLoad += HandleVideoAdLoadFailed;
     this.videoAd.OnVideoFinished += HandleVideoAdFinish;
     this.videoAd.OnVideoClose += HandleVideoAdClose;
+    this.videoAd.OnPlayError += HandleVideoPlayError;
 }
 ```
 
@@ -281,28 +311,41 @@ public void HandleVideoAdLoaded(object sender, EventArgs args)
 {
     MonoBehaviour.print("HandleVideoAdLoaded event received");
 }
+```
 
-public void HandleVideoAdLoadFailed(object sender, AdFailedToLoadEventArgs args)
+```c#
+public void HandleVideoAdLoadFailed(object sender, CustomEventArgs args)
 {
     MonoBehaviour.print("HandleVideoAdLoadFailed event received with message:" + args.Message);
 }
+```
 
-public void HandleVideoAdFinish(object sender, EventArgs args)
+```c#
+public void HandleVideoAdFinish(object sender, CustomEventArgs args)
 {
     MonoBehaviour.print("HandleVideoAdFinish event finish");
 }
+```
 
-public void HandleVideoAdClose(object sender, EventArgs args)
+```c#
+public void HandleVideoAdClose(object sender, CustomEventArgs args)
 {
     MonoBehaviour.print("HandleVideoAdClose event error");
 }
 ```
 
-`HandleVideoAdLoaded（）` 广告竞价请求成功，并且广告资源下载完毕之后回调；  
+```c#
+public void HandleVideoPlayError(object sender, CustomEventArgs args) {
+    MonoBehaviour.print("HandleVideoPlayError event with message：" + args.Message);
+}
+```
+
+`HandleVideoAdLoaded()` 广告竞价请求成功，并且广告资源下载完毕之后回调；  
 `HandleVideoAdLoadFailed()` 广告竞价请求失败、视频资源下载失败等会触发该回调；  
 `HandleVideoAdFinish()` 方法只会在视频流程整个完成，并且用户关闭落地页或者下载安装应用成功才会触发；  
-`HandleVideoAdClose()` 跳过广告、点击**x**关闭广告等非正常流程回触发该回调； 
->同样开发者只需要注册自己关心的回调，不需要全部实现。 
+`HandleVideoAdClose()` 跳过广告、点击**x**关闭广告等非正常流程回触发该回调；   
+`HandleVideoPlayError()` 视频播放出现错误触发该回调；  
+>同样开发者只需要注册自己关心的回调，不强制全部实现。 
 
 ## **5. 注意事项**
 
@@ -324,9 +367,9 @@ public void HandleVideoAdClose(object sender, EventArgs args)
 </provider>
 ```
 
-2、 适配安卓7.0 除了上述5.2 之外，还需要修改**Plugins > Android > res > provider_pahts.xml**中的两个`path` 值，具体的操作`provider_paths.xml` 文件中有具体提示；
+2、 适配安卓7.0 除了上述5.1 之外，还需要修改**Plugins > Android > res > provider_pahts.xml**中的两个`path` 值，具体的操作`provider_paths.xml` 文件中有具体提示；
 
-3、 如果用户有接入其他第三方Android插件，并且插件中也引入了`support-v4-23.0.0` v4包，只需要保留一个；
+3、 如果用户有接入其他第三方Android插件，并且插件中也引入了`support-v4-23.0.0.jar` v4包，只需要保留一个；
 
 4、 如果其他第三方Android插件中也有`Androidmanifest.xml` 文件，需要合并；  
 
@@ -334,12 +377,12 @@ public void HandleVideoAdClose(object sender, EventArgs args)
 
 ```c#
 void Awake() {
-    MobileAdService adService = MobileAdService.getInstance();
-    adService.setFileProviderAuthorities("<authorities>");
+    MobileAdService adService = MobileAdService.GetInstance();
+    adService.SetFileProviderAuthorities("<authorities>");
 }
 ```  
 
-6、 如果不需要适配安卓7.0，请忽略上述操作，并且请删除`AndroidManifest.xml` 里 `provider` 的注册代码。
+6、 如果不需要适配安卓7.0，请忽略上述操作，并且请删除`AndroidManifest.xml` 里 `provider` 的注册代码,及删除引用的`support-v4-23.jar` 包。
 
 ### 5.2 iOS
 
@@ -376,23 +419,32 @@ libz.tbd
 ## **6. 其他**  
 
 6.1 debug模式  
-&emsp;`MobileAdService` 类中提供了一个`setDebug(bool)` 方法，用来开关插件包中引用的Android/iOS包中的日志输出，日志默认关闭，传入`true` 的时候，才有日志输出，开发者可以通过使用相关工具查看移动设备的日志输出，建议开发者发布正式包的时候，关闭日志输出。  
-
+&emsp;`MobileAdService` 类中提供了一个`SetDebug(bool)` 方法，用来开关插件包中引用的Android/iOS包中的日志输出，SDK 默认关闭日志输出，传入`true` 的时候，才有日志输出，开发者可以通过使用相关工具查看移动设备的日志输出，建议开发者发布正式包的时候，关闭日志输出。  
 ```c#
 void Awake() 
 {
-    MobileAdService adService = MobileAdService.getInstance();
-    adService.setDebug(true);
+    MobileAdService adService = MobileAdService.GetInstance();
+    adService.SetDebug(true);
 }
 ```
 
 6.2 位置信息开关  
-&emsp;`MobileAdService` 类中还提供了一个`setLocationEnable(bool)` 方法，用来决定是否获取用户的位置信息，默认开启,开发者传入`false` 时关闭。  
+&emsp;`MobileAdService` 类中还提供了一个`SetLocationEnable(bool)` 方法，用来决定是否获取用户的位置信息，SDK 默认开启位置获取,开发者传入`false` 时关闭。  
 
 ```c#
 void Awake() 
 {
-    MobileAdService adService = MobileAdService.getInstance();
-    adService.setLocationEnable(true);
+    MobileAdService adService = MobileAdService.GetInstance();
+    adService.SetLocationEnable(false);
 }
-```
+```  
+
+6.3 视频关闭开关  
+&emsp;`MobileAdService` 类中提供了一个`SetCloseVideoEnable(bool)` 方法，此方法的作用是用来决定视频的左上角是否出现 “x” 按钮让用户可以直接关闭视频广告，默认不出现，开发者传入`true`时出现。  
+```c#
+void Awake() 
+{
+    MobileAdService adService = MobileAdService.GetInstance();
+    adService.SetCloseVideoEnable(true);
+}
+```  

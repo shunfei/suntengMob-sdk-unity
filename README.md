@@ -18,7 +18,14 @@ Unity 广告SDK
 
 02/16/2017 - [v1.0.0](https://github.com/shunfei/suntengMob-sdk-unity/releases/tag/v1.0.0)
 
-* Initial release.
+* Initial release.  
+
+02/16/2017 - [v2.0.0](https://github.com/shunfei/suntengMob-sdk-unity/releases/tag/v2.0.0)
+
+* 替换底层引用SDK,把原有视频和普通广告SDK合并;  
+* 修改部分使用和回调接口;  
+* 新增部分功能;
+* 修改部分已知Bug及优化。
 
 ## 效果展示
 
