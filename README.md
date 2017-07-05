@@ -16,9 +16,10 @@ Unity 广告SDK
  
 ## Change Log
 
-02/16/2017 - [v1.0.0](https://github.com/shunfei/suntengMob-sdk-unity/releases/tag/v1.0.0)
+07/05/2017 - [v2.1.0](https://github.com/shunfei/suntengMob-sdk-unity/releases/tag/v2.1.0)  
 
-* Initial release.  
+* New support for NativeAd;
+* Fix some bugs.
 
 02/16/2017 - [v2.0.0](https://github.com/shunfei/suntengMob-sdk-unity/releases/tag/v2.0.0)
 
@@ -26,6 +27,10 @@ Unity 广告SDK
 * 修改部分使用和回调接口;  
 * 新增部分功能;
 * 修改部分已知Bug及优化。
+
+02/16/2017 - [v1.0.0](https://github.com/shunfei/suntengMob-sdk-unity/releases/tag/v1.0.0)
+
+* Initial release.  
 
 ## 效果展示
 
